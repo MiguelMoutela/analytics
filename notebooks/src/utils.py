@@ -1,3 +1,16 @@
+from datetime import date, timedelta
+
+def date_range(start=None, end=None):
+    y1, m1, d1 = [int(item) for item in start.split('-')]
+    start = date(y1, m1, d1)
+    y2, m2, d2 = [int(item) for item in end.split('-')]
+    end = date(y2, m2, d2)
+    span = end - start
+    dr = []
+    for i in range(span.days + 1):
+        dr.append(str(start + timedelta(days=i)))
+    return dr
+
 def sql_to_csv(file_path):
     '''Read file of stringified SQL table, transform it to CSV string
     '''
