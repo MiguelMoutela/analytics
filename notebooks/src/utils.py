@@ -11,6 +11,14 @@ def date_range(start=None, end=None):
         dr.append(str(start + timedelta(days=i)))
     return dr
 
+def previous_date(cur_date):
+    '''Returns ISO date string for date before specified date,
+    Example: previous_date('2017-11-01') # Returns '2017-10-31'
+    '''
+    y1, m1, d1 = [int(item) for item in cur_date.split('-')]
+    cur_date = date(y1, m1, d1)
+    return str(cur_date + timedelta(days=1))
+
 def sql_to_csv(file_path):
     '''Read file of stringified SQL table, transform it to CSV string
     '''
@@ -33,6 +41,8 @@ def sql_to_lists(file_path):
             continue
         table.append(row)
     return table
+
+
 
 #file_path = '../../../data/dates.txt'
 # file_path = '../../../aou_enrollment/data/raw/simplified_race_and_gender.txt'
