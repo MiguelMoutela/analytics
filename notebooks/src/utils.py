@@ -43,7 +43,10 @@ def sql_to_lists(file_path):
     return table
 
 
-
-#file_path = '../../../data/dates.txt'
-# file_path = '../../../aou_enrollment/data/raw/simplified_race_and_gender.txt'
-#print(len(sql_to_lists(file_path)))
+def n_sized_chunks(lst, n):
+    '''Split a list into chunks of approximately length n
+    '''
+    chunks = []
+    for i in range(0, len(lst), n):
+        chunks.append(lst[i:i+n])
+    return chunks
