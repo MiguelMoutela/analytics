@@ -2,9 +2,18 @@ from .utils import *
 
 
 class AouSummary:
-    
+    """Summary of analytics metrics for the All of Us Research Program
+    """
     
     def __init__(self, file_path, start_date, end_date, interval):
+        """Construct AouSummary object
+        
+        Args:
+          file_path: Path to file of raw SQL output, e.g. '../../data/IntervalTotals/20171122_dates_all.txt'
+          start_date: ISO date string for beginning of period of interest, e.g. '2017-05-21'
+          end_date: ISO date string for end of period of interest, e.g. '2017-11-18'
+          interval: Size of analysis "bin"; one of 'day', 'week', or 'month'
+        """
 
         rows = self.get_rows(file_path)
         counts_by_site_per_day = self.get_counts_by_site_per_day(rows, start_date, end_date)
@@ -53,6 +62,7 @@ class AouSummary:
         self.cumulative_totals = cumulative_totals
         self.csv_interval_totals = csv_interval_totals
         
+        
     @staticmethod
     def get_rows(file_path):
         """Returns raw data from participants_view SQL output, as a list of lists
@@ -90,6 +100,7 @@ class AouSummary:
         rows = lists[1:]
         return rows
 
+    
     @staticmethod
     def truncate_counts(counts_by_site_per_day, start_date, end_date):
         # Dates in *dates.txt seem to be past-shifted by one day
@@ -114,6 +125,7 @@ class AouSummary:
 
         return truncated_counts
 
+    
     @staticmethod
     def get_counts_by_site_per_day(rows, start_date, end_date):
         """Count of participants who reached "full participant" status on a given day.
@@ -176,6 +188,7 @@ class AouSummary:
         counts_by_site_per_day = AouSummary.truncate_counts(counts_by_site_per_day, start_date, end_date)
         return counts_by_site_per_day
 
+    
     @staticmethod
     def get_counts_by_site_per_interval(counts_by_site_per_day, interval):
         """Roll up days into weekly or monthly bins, if requested
@@ -220,6 +233,7 @@ class AouSummary:
 
         return counts_by_site_per_interval
     
+    
     @staticmethod
     def get_milestones(counts_by_site_per_interval):    
         """Returns milestones by site, e.g. date of first full participant enrollment
@@ -238,6 +252,7 @@ class AouSummary:
                 milestones[hpo]['first_fp'] = '0'
         return milestones
 
+    
     @staticmethod
     def get_sites_at_milestone(milestones, dates):
         """Return dictionary reporting the number of sites that have achieved a given
@@ -268,6 +283,7 @@ class AouSummary:
 
         return sites_at_milestone
 
+    
     @staticmethod
     def get_counts_per_interval(counts_by_site_per_interval):
         counts_per_interval = {}
@@ -281,6 +297,7 @@ class AouSummary:
                     counts_per_interval[date] += count
         return counts_per_interval
 
+    
     @staticmethod
     def get_cumulative_totals_by_site(counts_by_site_per_interval, dates):
         """Gets the running total by site
@@ -298,6 +315,7 @@ class AouSummary:
                     cumulative_totals_by_site[hpo][date] = count + prev_count
         return cumulative_totals_by_site
 
+    
     @staticmethod
     def get_cumulative_totals(cumulative_totals_by_site, dates):
         """Collapse cumulative totals by date by site into cumulative totals by date
@@ -310,6 +328,7 @@ class AouSummary:
                 cumulative_totals[date] += cumulative_totals_by_site[hpo][date]
         return cumulative_totals
 
+    
     @staticmethod
     def get_means_per_interval(counts_per_interval, sites_at_milestone):
         """Returns cross-site average full participant enrollment per interval.
@@ -326,6 +345,7 @@ class AouSummary:
             means_per_interval[date] = mean
         return means_per_interval
 
+    
     @staticmethod
     def get_csv_interval_totals(
         counts_by_site_per_interval, hpo_of_interest, interval, counts_per_interval, 
