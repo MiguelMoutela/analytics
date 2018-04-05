@@ -28,20 +28,29 @@ def sql_to_csv(file_path):
     csv_lines = '\n'.join(csv_lines)
     return csv_lines
 
+def csv_to_lists(file_path):
+    '''Read CSV file, return list of lists
+    '''
+    table = []
+    with open(file_path) as f:
+        lines = f.readlines()
+    for line in lines:
+        row = [column.strip() for column in line.strip().split(',')]
+        table.append(row)
+    return table
 
 def sql_to_lists(file_path):
     '''Read file of stringified SQL table, transform it to list of lists
     '''
+    table = []
     with open(file_path) as f:
         raw_lines = f.readlines()
-    table = []
     for raw_line in raw_lines:
         row = [column.strip() for column in raw_line.split('|')][1:-1]
         if len(row) == 0:
             continue
         table.append(row)
     return table
-
 
 def n_sized_chunks(lst, n):
     '''Split a list into chunks of approximately length n

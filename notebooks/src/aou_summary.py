@@ -64,38 +64,32 @@ class AouSummary:
         
         
     @staticmethod
-    def get_rows(file_path):
+    def get_rows(file_path, input_format='csv'):
         """Returns raw data from participants_view SQL output, as a list of lists
         """
         '''
-        SQL query used to generate values in 'lists':
-
         SELECT  
-            hpo,
-            enrollment_status,
-            CAST(sign_up_time AS date) sign_up_time,
-            CAST(consent_for_study_enrollment_time AS date) consent_for_study_enrollment_time,
-            CAST(consent_for_electronic_health_records_time AS date) consent_for_electronic_health_records_time,
-            CAST(physical_measurements_time AS date) physical_measurements_time,
-            CAST(questionnaire_on_the_basics_time AS date) questionnaire_on_the_basics_time,
-            CAST(questionnaire_on_overall_health_time AS date) questionnaire_on_overall_health_time,
-            CAST(questionnaire_on_lifestyle_time AS date) questionnaire_on_lifestyle_time,
-            CAST(sample_status_1sst8_time AS date) sample_status_1sst8_time,
-            CAST(sample_status_1pst8_time AS date) sample_status_1pst8_time,
-            CAST(sample_status_1hep4_time AS date) sample_status_1hep4_time,
-            CAST(sample_status_1ed04_time AS date) sample_status_1ed04_time,
-            CAST(sample_status_1ed10_time AS date) sample_status_1ed10_time,
-            CAST(sample_status_2ed10_time AS date) sample_status_2ed10_time,
-            CAST(sample_status_1ur10_time AS date) sample_status_1ur10_time,
-            CAST(sample_status_1sal_time AS date) sample_status_1sal_time,
-            CAST(suspension_time AS date) suspension_time,
-            CAST(withdrawal_time AS date) withdrawal_time
-        FROM rdr.participant_view 
-        WHERE 
-            hpo <> 'TEST' 
-        ORDER BY sign_up_time;
+           hpo,
+           enrollment_status,
+           CAST(sign_up_time AS date) sign_up_time,
+           CAST(consent_for_electronic_health_records_time AS date) consent_for_electronic_health_records_time,
+           CAST(physical_measurements_time AS date) physical_measurements_time,
+           CAST(questionnaire_on_the_basics_time AS date) questionnaire_on_the_basics_time,
+           CAST(questionnaire_on_overall_health_time AS date) questionnaire_on_overall_health_time,
+           CAST(questionnaire_on_lifestyle_time AS date) questionnaire_on_lifestyle_time,
+           CAST(sample_status_1ed04_time AS date) sample_status_1ed04_time,
+           CAST(sample_status_1sal_time AS date) sample_status_1sal_time
+       FROM rdr.participant_view
+       WHERE
+           hpo <> 'TEST' AND
+           enrollment_status = 3 AND
+           withdrawal_status <> 2
+       ORDER BY sign_up_time
         '''
-        lists = sql_to_lists(file_path)
+        if input_format == 'csv':
+            lists = csv_to_lists(file_path)
+        else:
+            lists = sql_to_lists(file_path)
         headers = lists[0]
         rows = lists[1:]
         return rows
@@ -148,27 +142,9 @@ class AouSummary:
             # in the enrollment lifecycle
             hpo = row_columns[0]
 
-            '''
-            # Dead code, but perhaps useful documentation
-
-            consent_for_study_enrollment_time = row_columns[2]
-            consent_for_electronic_health_records_time = row_columns[3]
-            physical_measurements_time = row_columns[4]
-
-            # These correspond to "num_completed_baseline_ppi_modules"
-            questionnaire_on_the_basics = row_columns[5]
-            questionnaire_on_overall_health_time = row_columns[6]
-            questionnaire_on_lifestyle_time = row_columns[7]
-
-            # We assume these three samples comprise "samples_to_isolate_dna"
-            sample_status_1ed04_time = row_columns[11] # EDTA DNA 4 mL
-            sample_status_1ed10_time = row_columns[12] # 1st EDTA DNA 10 mL
-            sample_status_2ed10_time = row_columns[13] # 2nd EDTA DNA 10 mL
-            '''
-
             # Gather all the dates of each lifecycle phase that needs to be
             # passed in order to become a full participant
-            dates = row_columns[2:8] + row_columns[11:14]
+            dates = row_columns[2:]
 
             # Get the latest -- the most recent -- of those dates
             most_recent_date = sorted(dates)[-1]
