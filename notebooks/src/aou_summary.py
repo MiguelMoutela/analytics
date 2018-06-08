@@ -145,6 +145,10 @@ class AouSummary:
             # Gather all the dates of each lifecycle phase that needs to be
             # passed in order to become a full participant
             dates = row_columns[2:]
+            
+            dates = dates[:2] + dates[4:]
+            
+            dates = [date if date != 'NULL' else '' for date in dates]
 
             # Get the latest -- the most recent -- of those dates
             most_recent_date = sorted(dates)[-1]
