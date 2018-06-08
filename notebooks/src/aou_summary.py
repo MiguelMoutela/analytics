@@ -64,7 +64,7 @@ class AouSummary:
         
         
     @staticmethod
-    def get_rows(file_path, input_format='csv'):
+    def get_rows(file_path, input_format=None):
         """Returns raw data from participants_view SQL output, as a list of lists
         """
         '''
@@ -86,7 +86,7 @@ class AouSummary:
            withdrawal_status <> 2
        ORDER BY sign_up_time
         '''
-        if input_format == 'csv':
+        if file_path[-3:] == 'csv' or input_format == 'csv':
             lists = csv_to_lists(file_path)
         else:
             lists = sql_to_lists(file_path)
