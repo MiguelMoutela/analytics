@@ -6,7 +6,7 @@
 #
 
 # Find notebooks
-NBS=`find . -type f | grep -v '\.ipynb_checkpoints/' | grep -a '.ipynb$' | uniq`
+NBS=`git diff --cached --name-only --diff-filter=ACM | grep -v '\.ipynb_checkpoints/' | grep -a '.ipynb$' | uniq`
 
 # Remove outputs from all notebooks
 for NB in $NBS ; do
