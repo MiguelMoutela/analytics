@@ -2,3 +2,7 @@
 .idea/
 .ipynb_checkpoints
 __pycache__
+
+# Data Directory excluded
+notebooks/data/*
+!notebooks/data/README.md
