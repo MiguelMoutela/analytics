@@ -6,11 +6,11 @@
 #
 
 # Find notebooks
-NBS=`find . -type f | grep -a '.ipynb$' | uniq`
+NBS=`find . -type f | grep -v '\.ipynb_checkpoints/' | grep -a '.ipynb$' | uniq`
 
 # Remove outputs from all notebooks
 for NB in $NBS ; do
     echo "Removing outputs from $NB"
-    hooks/lib/nbstripout.py "$NB"
+    jupyter nbconvert --ClearOutputPreprocessor.enabled=True --inplace "$NB"
     git add "$NB"
 done
